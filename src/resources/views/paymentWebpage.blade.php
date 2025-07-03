@@ -84,7 +84,7 @@
         </div>
     
             <div class="button-group">
-                 <a href='{{ $data['confirmUrl'] }}'> <button type="submit" 
+                 <a href='{{ $data['returnUrl'] }}'> <button type="submit" 
                         name="testc" 
                         value="confirm" 
                         class="button confirm">
