@@ -10,6 +10,14 @@ A payment processing system built with Laravel.
 - Payment failure handling
 - Secure session handling
 
+### Usage
+ - **instalation**: `cd src`
+   - `composer install`
+ - **run**:
+   - `cd src`
+   - `php artisan migrate`
+   - `php artisan serve`
+
 ## API Endpoints
 
 ### Payment Registration
@@ -72,27 +80,13 @@ The application uses PHP sessions to store:
 ### Register a Payment
 
 ```
-GET /payment/rest/register.do?userName=johnsmith&password=secure123&orderNumber=ORD12345&amount=100.00&currency=USD&returnUrl=http://example.com/success&failUrl=http://example.com/failure&description=Test%20Order&language=en&jsonParams={"key":"value"}
+GET /api/payment/rest/register.do?currency=012&amount=139139&language=fr&orderNumber=1538298192&userName=xxxxxxxx&password=xxxxxxx&returnUrl=httpssatimdzdirectpay
 ```
 
 ### Confirm a Payment
 
 ```
-GET /payment/rest/confirm.do?userName=johnsmith&password=secure123&orderNumber=ORD12345&language=en
-```
-
-## Project Structure
-
-```
-app/
-├── Http/
-│   └── Controllers/
-│       └── PaymentController.php
-resources/
-└── views/
-    └── paymentWebpage.blade.php
-routes/
-└── web.php
+GET /api/payment/rest/confirmOrder.do?language=EN&orderId=1&password=xxxxx&userName=testtest
 ```
 
 ## Contributing
