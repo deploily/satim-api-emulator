@@ -3,8 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Payment;
+use App\Models\User;
+use GuzzleHttp\Promise\Create;
+use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class PaymentController extends Controller
 {
@@ -24,6 +29,8 @@ class PaymentController extends Controller
             'jsonParams' => 'string',
         ];
 
+
+
         // Validate the request
         $validated = Validator::make($request->query(), $rules);
         
@@ -34,20 +41,27 @@ class PaymentController extends Controller
             ], 400);
         }
 
-        // Extract validated data
         $data = $validated->validated();
+        $user = User::where('name', $data['userName'])->first();
+        if (!$user || !Hash::check($data['password'], $user->password)) {
+            return response()->json([
+                'orderId' => '',
+                'formUrl' =>'',
+                'errorMessage' => 'Invalid username or password',
+                'errorCode' => '0',
+                ], 401);
+        }
         try{
          
           $payment =  Payment::create(
                 [
-                    'userName' => $data['userName'],
-                    'password' => $data['password'],
                     'orderNumber' => $data['orderNumber'],
                     'amount' => $data['amount'],
                     'currency' => $data['currency'],
                     'returnUrl' => $data['returnUrl'],
                     'isConfirmed' => false,
                     'isFailed' => false,
+                    'user_id' => $user->id,
                 ]
             );
           
@@ -88,13 +102,27 @@ class PaymentController extends Controller
             ], 400);
         }
         $data = $validated->validated();
+        $user = User::where('name', $data['userName'])->first();
+        if (!$user || !Hash::check($data['password'], $user->password)|| !$user->payments()->where('id', $data['orderId'])->exists()) {
+            return response()->json([
+              'orderStatus' => 2, 
+              'errorCode' => 0,
+              'errorMessage' => '',
+              'orderNumber' => $payment->order_number ?? '',
+              'actionCode' => 0,
+              'actionCodeDescription' => 'Invalid username or password',
+              'amount' => $payment->amount ?? 0,
+              'currency' => 012
+          ], 401);
+        }
+
    $payment = Payment::findOrFail($data['orderId']);
 
    
   if($payment){
       if($payment->isConfirmed){
           return response()->json([
-              'orderStatus' => 2, // Already processed
+              'orderStatus' => 2, 
               'errorCode' => 0,
               'errorMessage' => '',
               'orderNumber' => $payment->order_number ?? '',
@@ -109,7 +137,7 @@ class PaymentController extends Controller
       $payment->save();
       
       return response()->json([
-          'orderStatus' => 2, // Successfully processed
+          'orderStatus' => 2, 
           'errorCode' => 0,
           'errorMessage' => '',
           'orderNumber' => $payment->order_number ?? '',
@@ -126,7 +154,7 @@ class PaymentController extends Controller
       ]);
   } else {
       return response()->json([
-          'errorCode' => 5, // Order not found
+          'errorCode' => 5,
           'errorMessage' => 'Payment not found',
           'actionCode' => 5,
           'actionCodeDescription' => 'Order not found in the system'
@@ -146,6 +174,28 @@ class PaymentController extends Controller
             return view('paymentWebpage',['data'=>$payment->getAttributes()]);
         }
     
+   }
+
+    public function generateCredentials(Request $request){
+        $username = Str::uuid();
+        $password = Str::random(16);
+        try {
+            $existingUser = User::where('name', $username)->first();
+            if ($existingUser) {
+                return response()->json(['error' => 'Username already exists'], 400);
+            }
+            User::create([
+            'name' => $username,
+            'password' => Hash::make($password)
+             ]);
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Database error: ' . $e->getMessage()], 500);
+        }
    
+        return response()->json([
+            'username' => $username,
+            'password' => $password,
+        ]);
     }
 }

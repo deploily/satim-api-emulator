@@ -14,8 +14,6 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
         
             $table->id();
-            $table->string('userName')->nullable(true);
-            $table->string('password')->nullable(false);
             $table->integer('orderNumber')->nullable(false);
             $table->integer('amount')->nullable(false);
             $table->integer('currency')->nullable(false);
@@ -23,6 +21,7 @@ return new class extends Migration
             $table->string('failUrl')->nullable(true);
             $table->string('isConfirmed')->nullable(true)->default(false);
             $table->string('isFailed')->nullable(true)->default(false);
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
 
             $table->timestamps();
         });
