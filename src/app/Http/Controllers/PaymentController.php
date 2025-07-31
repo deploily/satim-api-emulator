@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Payment;
 use App\Models\User;
-use GuzzleHttp\Promise\Create;
-use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
