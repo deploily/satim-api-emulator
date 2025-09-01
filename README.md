@@ -17,6 +17,7 @@ A payment processing system built with Laravel.
    - `cd src`
    - `php artisan migrate`
    - `php artisan serve`
+   - `cp .env.example .env`
 
 ## API Endpoints
 

@@ -1,8 +1,18 @@
 FROM mcr.microsoft.com/devcontainers/php:1-8.2-bookworm
 
-# Install MariaDB client
+# Install dependencies + PHP extensions
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get install -y mariadb-client \ 
+    && apt-get install -y \
+        mariadb-client \
+        libicu-dev \
+        libzip-dev \
+        unzip \
+    && docker-php-ext-install \
+        mysqli \
+        pdo \
+        pdo_mysql \
+        intl \
+        zip \
     && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 # Install php-mysql driver
