@@ -2,18 +2,6 @@
 
 return [
 
-    /*
-    |--------------------------------------------------------------------------
-    | Third Party Services
-    |--------------------------------------------------------------------------
-    |
-    | This file is for storing the credentials for third party services such
-    | as Mailgun, Postmark, AWS and more. This file provides the de facto
-    | location for this type of information, allowing packages to have
-    | a conventional file to locate the various service credentials.
-    |
-    */
-
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
     ],
@@ -34,13 +22,19 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-    'keycloak' => [
-    'client_id'     => env('KEYCLOAK_CLIENT_ID'),
-    'client_secret' => env('KEYCLOAK_CLIENT_SECRET'),
-    'redirect'      => env('KEYCLOAK_REDIRECT_URI'),
-    'base_url'      => env('KEYCLOAK_BASE_URL'),
-    'realm'         => env('KEYCLOAK_REALM'),
-     ],
 
+    'keycloak' => [
+        'client_id'     => env('KEYCLOAK_CLIENT_ID'),
+        'client_secret' => env('KEYCLOAK_CLIENT_SECRET'),
+        'redirect'      => env('KEYCLOAK_REDIRECT_URI'),
+        'base_url'      => env('KEYCLOAK_BASE_URL'),
+        'realm'         => env('KEYCLOAK_REALM', 'satim'),
+
+     
+        'authorize'     => env('KEYCLOAK_BASE_URL') . '/realms/' . env('KEYCLOAK_REALM') . '/protocol/openid-connect/auth',
+        'token'         => env('KEYCLOAK_BASE_URL') . '/realms/' . env('KEYCLOAK_REALM') . '/protocol/openid-connect/token',
+        'userinfo'      => env('KEYCLOAK_BASE_URL') . '/realms/' . env('KEYCLOAK_REALM') . '/protocol/openid-connect/userinfo',
+        'logout'        => env('KEYCLOAK_BASE_URL') . '/realms/' . env('KEYCLOAK_REALM') . '/protocol/openid-connect/logout',
+    ],
 
 ];
