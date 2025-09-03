@@ -24,11 +24,11 @@ return [
     ],
 
     'keycloak' => [
+        'realms'         => env('KEYCLOAK_REALM', 'satim'),
         'client_id'     => env('KEYCLOAK_CLIENT_ID'),
         'client_secret' => env('KEYCLOAK_CLIENT_SECRET'),
         'redirect'      => env('KEYCLOAK_REDIRECT_URI'),
         'base_url'      => env('KEYCLOAK_BASE_URL'),
-        'realm'         => env('KEYCLOAK_REALM', 'satim'),
 
      
         'authorize'     => env('KEYCLOAK_BASE_URL') . '/realms/' . env('KEYCLOAK_REALM') . '/protocol/openid-connect/auth',

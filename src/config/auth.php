@@ -36,14 +36,11 @@ return [
     */
 
     'guards' => [
-        'api' => [
-            'driver' => 'keycloak',
+        'web' => [
+            'driver' => 'session',
             'provider' => 'users',
-            'realm' => env('KEYCLOAK_REALM'),        
-            'client_id' => env('KEYCLOAK_CLIENT_ID'),
-            'client_secret' => env('KEYCLOAK_CLIENT_SECRET'),
-            'base_url' => env('KEYCLOAK_BASE_URL'),           
         ],
+        
     ],
 
     /*
@@ -66,7 +63,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\User::class),
+            'model' => App\Models\User::class,
         ],
 
         // 'users' => [

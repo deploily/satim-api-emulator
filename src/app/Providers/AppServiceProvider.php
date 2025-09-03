@@ -21,20 +21,29 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-           
+        // Surcharge la config pour s'assurer que le realm est bien celui défini dans .env
         config([
             'services.keycloak.realm' => env('KEYCLOAK_REALM', 'satim'),
         ]);
-        // Surcharge le provider Keycloak pour forcer le realm
+
+        // Redéfinition du provider Keycloak
         Socialite::extend('keycloak', function ($app) {
-            $config = $app['config']['services.keycloak'];
+            $config   = $app['config']['services.keycloak'];
+            $baseUrl  = rtrim($config['base_url'], '/');   // Nettoie l'URL de base
+            $realm    = $config['realms'];
 
             return Socialite::buildProvider(KeycloakProvider::class, [
                 'client_id'     => $config['client_id'],
                 'client_secret' => $config['client_secret'],
                 'redirect'      => $config['redirect'],
-                'base_url'      => $config['base_url'],
-                'realm'         => $config['realm'], // <-- important, ici "satim"
+                'base_url'      => $baseUrl,
+                'realms'         => $realm,
+
+                // Endpoints Keycloak corrects
+                'authorize'     => "{$baseUrl}/realms/{$realm}/protocol/openid-connect/auth",
+                'token'         => "{$baseUrl}/realms/{$realm}/protocol/openid-connect/token",
+                'userinfo'      => "{$baseUrl}/realms/{$realm}/protocol/openid-connect/userinfo",
+                'logout'        => "{$baseUrl}/realms/{$realm}/protocol/openid-connect/logout",
             ]);
         });
     }
