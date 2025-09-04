@@ -1,51 +1,27 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Laravel\Socialite\Facades\Socialite;
-use Illuminate\Support\Facades\Auth;
-use App\Models\User;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\Auth\KeycloakController;
 
 /*
 |--------------------------------------------------------------------------
 | Routes Web
 |--------------------------------------------------------------------------
 */
-Route::get('paymentWebpage', [PaymentController::class,'paymentWebpage']);
+
+// Page de paiement
+Route::get('/paymentWebpage', [PaymentController::class, 'paymentWebpage'])
+    ->name('payment.page');
+
+// Login avec Keycloak
+Route::get('/login', [KeycloakController::class, 'redirect'])->name('login');
+Route::get('/auth/keycloak/callback', [KeycloakController::class, 'callback']);
 
 
+// Logout
+Route::get('/logout', [KeycloakController::class, 'logout'])->name('logout');
 
-// LOGIN AVEC KEYCLOAK
-Route::get('/login', function () {
-    return Socialite::driver('keycloak')->redirect();
-})->name('login');
-
-
-
-Route::get('/auth/keycloak/callback', function () {
-    try {
-        $keycloakUser = Socialite::driver('keycloak')->stateless()->user();
-        dd($keycloakUser);
-    } catch (\Exception $e) {
-        dd($e->getMessage(), $e->getTraceAsString()); 
-    }
-});
-
-// DASHBOARD (protégé par auth)
-Route::middleware('auth')->get('/dashboard', function () {
-    return "Bienvenue " . Auth::user()->name;
-})->name('dashboard');
-
-// 🚪 LOGOUT
-Route::get('/logout', function () {
-    Auth::logout();
-
-    $logoutUrl = env('KEYCLOAK_BASE_URL') . '/realms/' . env('KEYCLOAK_REALM') . '/protocol/openid-connect/logout?redirect_uri=' . urlencode('http://localhost:8000');
-
-    return redirect($logoutUrl);
-})->name('logout');
-
-// Route attendue par Filament
-Route::get('/filament/login', function () {
-    return redirect()->route('login'); 
-})->name('filament.admin.auth.login');
+// Filament
+Route::get('/filament/login', fn() => redirect()->route('login'))
+    ->name('filament.admin.auth.login');

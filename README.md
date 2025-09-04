@@ -100,3 +100,16 @@ GET /api/payment/rest/confirmOrder.do?language=EN&orderId=1&password=xxxxx&userN
 
 
 This project is licensed under the Apache License - see the LICENSE file for details.
+## Getting a Keycloak Token
+
+To retrieve an **access token** with an existing Keycloak user (`ranim`), use the following `curl` command:
+
+```bash
+curl -X POST "http://172.17.0.1:8080/realms/satim/protocol/openid-connect/token" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=password" \
+  -d "client_id=laravel-api" \
+  -d "client_secret=PK2lHGeL4QaAW0eMXiaPqFnbzIi50OcK" \
+  -d "username=ranim" \
+  -d "password=ranim"
+```
