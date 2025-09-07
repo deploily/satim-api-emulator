@@ -43,26 +43,25 @@ class KeycloakController extends Controller
         }
     }
 
-    // Déconnexion
+
+
     public function logout()
     {
-        $idToken = session('keycloak_id_token');
-
-        // Déconnexion Laravel
         Auth::logout();
         session()->invalidate();
         session()->regenerateToken();
-
-        // Déconnexion Keycloak + redirection vers /login
-        $params = [];
-        if ($idToken) {
-            $params['id_token_hint'] = $idToken;
-        }
-        $params['post_logout_redirect_uri'] = url('/login');
-
-        $logoutUrl = env('KEYCLOAK_BASE_URL') . '/realms/' . env('KEYCLOAK_REALM') 
-                     . '/protocol/openid-connect/logout?' . http_build_query($params);
-
-        return redirect($logoutUrl);
+    
+        $redirectUri = config('app.url');
+        $idToken = session('keycloak_id_token');
+    
+        return redirect(
+            Socialite::driver('keycloak')->getLogoutUrl(
+                $redirectUri,
+                env('KEYCLOAK_CLIENT_ID'),
+                $idToken
+            )
+        );
     }
+    
+
 }
