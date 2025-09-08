@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PaymentResource\Pages;
-use App\Filament\Resources\PaymentResource\RelationManagers;
 use App\Models\Payment;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -11,7 +10,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
 
 class PaymentResource extends Resource
@@ -27,26 +25,32 @@ class PaymentResource extends Resource
                 Forms\Components\TextInput::make('orderNumber')
                     ->required()
                     ->numeric(),
+
                 Forms\Components\TextInput::make('amount')
                     ->required()
                     ->numeric(),
+
                 Forms\Components\TextInput::make('currency')
-                    ->required()
-                    ->numeric(),
+                    ->required(),
+
                 Forms\Components\TextInput::make('returnUrl')
                     ->required()
                     ->maxLength(255),
+
                 Forms\Components\TextInput::make('failUrl')
                     ->maxLength(255)
                     ->default(null),
-                Forms\Components\TextInput::make('isConfirmed')
-                    ->maxLength(255)
-                    ->default(0),
-                Forms\Components\TextInput::make('isFailed')
-                    ->maxLength(255)
-                    ->default(0),
+
+                Forms\Components\Toggle::make('isConfirmed')
+                    ->label('Confirmed')
+                    ->default(false),
+
+                Forms\Components\Toggle::make('isFailed')
+                    ->label('Failed')
+                    ->default(false),
+
                 Forms\Components\Hidden::make('user_id')
-                ->default(fn () => Auth::id()),
+                    ->default(fn () => Auth::id()),
             ]);
     }
 
@@ -54,61 +58,47 @@ class PaymentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('orderNumber')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('amount')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('currency')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('returnUrl')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('failUrl')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('isConfirmed')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('isFailed')
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('orderNumber')->sortable(),
+                Tables\Columns\TextColumn::make('amount')->sortable(),
+                Tables\Columns\TextColumn::make('currency'),
+                Tables\Columns\TextColumn::make('returnUrl')->limit(30),
+                Tables\Columns\TextColumn::make('failUrl')->limit(30),
+                Tables\Columns\IconColumn::make('isConfirmed')
+                    ->boolean(),
+                Tables\Columns\IconColumn::make('isFailed')
+                    ->boolean(),
                 Tables\Columns\TextColumn::make('user.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('User')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable(),
             ])
-            ->filters([
-                //
-            ])
+            ->filters([])
             ->actions([
                 Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                Tables\Actions\DeleteBulkAction::make(),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPayments::route('/'),
+            'index'  => Pages\ListPayments::route('/'),
             'create' => Pages\CreatePayment::route('/create'),
-             'view' => Pages\ViewPayment::route('/{record}'),
+            'view'   => Pages\ViewPayment::route('/{record}'),
         ];
     }
+
+    /**
+     * Filtrer les paiements selon l’utilisateur
+     */
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('user_id', Auth::id());
+    }
+    
+    
 }
