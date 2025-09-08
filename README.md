@@ -85,7 +85,7 @@ The application uses PHP sessions to store:
 GET /api/payment/rest/register.do?currency=012&amount=139139&language=fr&orderNumber=1538298192&userName=xxxxxxxx&password=xxxxxxx&returnUrl=httpssatimdzdirectpay
 ```
 ```
-curl -X GET "http://127.0.0.1:8000/api/payment/rest/register.do?orderNumber=123&amount=100&currency=012&returnUrl=http://localhost/success&failUrl=http://localhost/fail&language=EN&userName=satim_68bd3f882f7ca&password=RQEsyGhP5T&description=TestPayment&jsonParams=%7B%7D" \
+curl -X GET "http://127.0.0.1:8000/api/payment/rest/register.do?orderNumber=123&amount=100&currency=012&returnUrl=http://localhost/success&failUrl=http://localhost/fail&language=EN&userName=satim_68be9e9c5ec3f&password=B2fgKUNR1C&description=TestPayment&jsonParams=%7B%7D" \
 -H "Accept: application/json"
 
 ```
@@ -94,9 +94,11 @@ curl -X GET "http://127.0.0.1:8000/api/payment/rest/register.do?orderNumber=123&
 ```
 GET /api/payment/rest/confirmOrder.do?language=EN&orderId=1&password=xxxxx&userName=testtest
 ```
+
 ```
-curl -X GET "http://127.0.0.1:8000/api/payment/rest/confirmOrder.do?language=EN&orderId=3&userName=satim_68bd3f882f7ca&password=RQEsyGhP5T" \
+curl -X GET "http://127.0.0.1:8000/api/payment/rest/confirmOrder.do?language=EN&orderId=5&userName=satim_68be9e9c5ec3f&password=B2fgKUNR1C" \
 -H "Accept: application/json"
+
 ```
 
 ## Contributing
