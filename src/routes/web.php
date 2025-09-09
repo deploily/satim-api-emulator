@@ -1,9 +1,8 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Auth\KeycloakController;
-
+use App\Filament\Pages\UserProfile;
 /*
 |--------------------------------------------------------------------------
 | Routes Web
@@ -25,3 +24,10 @@ Route::get('/logout', [KeycloakController::class, 'logout'])->name('logout');
 // Filament
 Route::get('/filament/login', fn() => redirect()->route('login'))
     ->name('filament.admin.auth.login');
+
+Route::match(['get', 'post'], '/filament/logout', [KeycloakController::class, 'logout'])
+    ->name('filament.logout');
+
+Route::middleware(['auth:web']) 
+    ->get('/admin/user-profile', UserProfile::class)
+    ->name('admin.user-profile');
