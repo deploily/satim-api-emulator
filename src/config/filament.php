@@ -2,8 +2,7 @@
 
 return [
 
-    // ... ton code existant ...
-
+   
     /*
     |--------------------------------------------------------------------------
     | Authentication
@@ -14,18 +13,21 @@ return [
     */
 
     'auth' => [
-        // Le guard à utiliser : si tu utilises Keycloak, mets ton guard Keycloak
-        'guard' => 'web', // ou 'keycloak' si tu as configuré un guard Keycloak
-
-        // La page de login utilisée par Filament
+        'guard' => 'web',
         'pages' => [
-            // Classe de login par défaut de Filament
-            //'login' => \Filament\Http\Livewire\Auth\Login::class,
-
-            // OU si tu veux utiliser Keycloak, crée une page custom :
             'login' => \App\Filament\Pages\KeycloakLogin::class,
         ],
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Admin path
+    |--------------------------------------------------------------------------
+    |
+    | Préfixe des URLs Filament (ex: /admin)
+    |
+    */
+    'path' => 'admin', 
 
     /*
     |--------------------------------------------------------------------------
@@ -33,7 +35,7 @@ return [
     |--------------------------------------------------------------------------
     */
     'broadcasting' => [
-        // ton code existant...
+ 
     ],
 
     'default_filesystem_disk' => env('FILAMENT_FILESYSTEM_DISK', 'public'),
