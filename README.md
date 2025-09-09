@@ -10,16 +10,13 @@ A payment processing system built with Laravel.
 - Payment failure handling
 - Secure session handling
 
-### Usage
- - **instalation**: `cd src`
-   - `composer install`
- - **run**:
+### Prepare laravel environment
    - `cd src`
+   - `cp .env.example .env`
+   - `composer install`
    - `php artisan key:generate`
    - `php artisan migrate`
    - `php artisan serve`
-   - `cp .env.example .env`
-
 ## API Endpoints
 
 ### Payment Registration
