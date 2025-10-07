@@ -1,6 +1,6 @@
 FROM mcr.microsoft.com/devcontainers/php:1-8.2-bookworm
 
-# Install MariaDB client
+# Install dependencies + PHP extensions
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get install -y mariadb-client libicu-dev libzip-dev libpng-dev libonig-dev libzip-dev libxml2-dev libicu-dev zip unzip git curl\ 
     && apt-get clean -y && rm -rf /var/lib/apt/lists/*

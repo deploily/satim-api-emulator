@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Str;
+
 
 class User extends Authenticatable
 {
@@ -25,6 +27,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'satim_username',
+        'satim_password',
     ];
 
     /**
@@ -35,6 +39,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'satim_password',
     ];
 
     /**
@@ -57,5 +62,17 @@ class User extends Authenticatable
     public function canAccessPanel(Panel $panel): bool
     {
     return str_ends_with($this->email,'@admin.com');
+    }
+    protected static function booted()
+    {
+        static::creating(function ($user) {
+            if (empty($user->satim_username)) {
+                $user->satim_username = 'satim_' . uniqid();
+            }
+
+            if (empty($user->satim_password)) {
+                $user->satim_password = Str::random(10); // mot de passe aléatoire
+            }
+        });
     }
 }

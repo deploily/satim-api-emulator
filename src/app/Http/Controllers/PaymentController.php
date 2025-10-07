@@ -40,15 +40,16 @@ class PaymentController extends Controller
         }
 
         $data = $validated->validated();
-        $user = User::where('name', $data['userName'])->first();
-        if (!$user || !Hash::check($data['password'], $user->password)) {
+        $user = User::where('satim_username', $data['userName'])->first();
+        if (!$user || $user->satim_password !== $data['password']) {
             return response()->json([
                 'orderId' => '',
                 'formUrl' =>'',
-                'errorMessage' => 'Invalid username or password',
+                'errorMessage' => 'Invalid SATIM username or password',
                 'errorCode' => '0',
-                ], 401);
+            ], 401);
         }
+        
         try{
          
           $payment =  Payment::create(
@@ -100,18 +101,18 @@ class PaymentController extends Controller
             ], 400);
         }
         $data = $validated->validated();
-        $user = User::where('name', $data['userName'])->first();
-        if (!$user || !Hash::check($data['password'], $user->password)|| !$user->payments()->where('id', $data['orderId'])->exists()) {
+        $user = User::where('satim_username', $data['userName'])->first();
+        if (!$user || $user->satim_password !== $data['password'] || !$user->payments()->where('id', $data['orderId'])->exists()) {
             return response()->json([
-              'orderStatus' => 2, 
-              'errorCode' => 0,
-              'errorMessage' => '',
-              'orderNumber' => $payment->order_number ?? '',
-              'actionCode' => 0,
-              'actionCodeDescription' => 'Invalid username or password',
-              'amount' => $payment->amount ?? 0,
-              'currency' => 012
-          ], 401);
+                'orderStatus' => 2,
+                'errorCode' => 0,
+                'errorMessage' => '',
+                'orderNumber' => $data['orderId'], // ou ''
+                'actionCode' => 0,
+                'actionCodeDescription' => 'Invalid username or password',
+                'amount' => 0,
+                'currency' => 012
+            ], 401);
         }
 
    $payment = Payment::findOrFail($data['orderId']);
@@ -174,26 +175,39 @@ class PaymentController extends Controller
     
    }
 
-    public function generateCredentials(Request $request){
-        $username = Str::uuid();
-        $password = Str::random(16);
-        try {
-            $existingUser = User::where('name', $username)->first();
-            if ($existingUser) {
-                return response()->json(['error' => 'Username already exists'], 400);
-            }
-            User::create([
-            'name' => $username,
-            'password' => Hash::make($password)
-             ]);
-
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Database error: ' . $e->getMessage()], 500);
-        }
+   public function generateCredentials(Request $request)
+   {
+       $username = Str::uuid(); 
+       $password = Str::random(16);
    
-        return response()->json([
-            'username' => $username,
-            'password' => $password,
-        ]);
-    }
+       $satimUsername = 'satim_' . Str::random(8);
+       $satimPassword = Str::random(16);
+   
+       try {
+           if (User::where('name', $username)->exists()) {
+               return response()->json(['error' => 'Username already exists'], 400);
+           }
+   
+             User::create([
+               'name'           => $username,
+               'password'       => Hash::make($password),
+               'satim_username' => $satimUsername,
+               'satim_password' => Hash::make($satimPassword),
+           ]);
+   
+           return response()->json([
+               'username'        => $username,
+               'password'        => $password,
+               'satim_username'  => $satimUsername,
+               'satim_password'  => $satimPassword,
+           ]);
+       } catch (\Exception $e) {
+           return response()->json([
+               'error'   => 'Erreur lors de la génération des credentials',
+               'message' => $e->getMessage(),
+           ], 500);
+       }
+   }
+   
+
 }

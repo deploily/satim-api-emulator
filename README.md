@@ -26,13 +26,15 @@ Project setup using VSCode from (https://github.com/deploily/deploily-website)
 Instalation
 ```bash
 cd src
+cp .env.example .env
 composer install
+php artisan key:generate
+php artisan migrate
 ```
 
 Run
 ```bash
 cd src
-php artisan migrate
 php artisan serve
 ```
 
@@ -100,11 +102,21 @@ The application uses PHP sessions to store:
 ```
 GET /api/payment/rest/register.do?currency=012&amount=139139&language=fr&orderNumber=1538298192&userName=xxxxxxxx&password=xxxxxxx&returnUrl=httpssatimdzdirectpay
 ```
+```
+curl -X GET "http://127.0.0.1:8000/api/payment/rest/register.do?orderNumber=123&amount=100&currency=012&returnUrl=http://localhost/success&failUrl=http://localhost/fail&language=EN&userName=satim_68be9e9c5ec3f&password=B2fgKUNR1C&description=TestPayment&jsonParams=%7B%7D" \
+-H "Accept: application/json"
 
+```
 ### Confirm a Payment
 
 ```
 GET /api/payment/rest/confirmOrder.do?language=EN&orderId=1&password=xxxxx&userName=testtest
+```
+
+```
+curl -X GET "http://127.0.0.1:8000/api/payment/rest/confirmOrder.do?language=EN&orderId=5&userName=satim_68be9e9c5ec3f&password=B2fgKUNR1C" \
+-H "Accept: application/json"
+
 ```
 
 ## Contributing
@@ -117,3 +129,16 @@ GET /api/payment/rest/confirmOrder.do?language=EN&orderId=1&password=xxxxx&userN
 
 
 This project is licensed under the Apache License - see the LICENSE file for details.
+## Getting a Keycloak Token
+
+To retrieve an **access token** with an existing Keycloak user (`ranim`), use the following `curl` command:
+
+```bash
+curl -X POST "http://172.17.0.1:8080/realms/satim/protocol/openid-connect/token" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=password" \
+  -d "client_id=laravel-api" \
+  -d "client_secret=PK2lHGeL4QaAW0eMXiaPqFnbzIi50OcK" \
+  -d "username=ranim" \
+  -d "password=ranim"
+```

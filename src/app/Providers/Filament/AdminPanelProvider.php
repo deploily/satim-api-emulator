@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use Filament\Navigation\UserMenuItem;
 use App\Filament\Resources\PaymentResource\Widgets\PaymentChart;
 use App\Filament\Resources\PaymentResource\Widgets\StatsOverview;
 use Filament\Http\Middleware\Authenticate;
@@ -12,7 +13,6 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -28,7 +28,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('')
-            ->login()
+            ->login(\App\Filament\Auth\Login::class)
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -39,10 +39,24 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
                 StatsOverview::class,
                 PaymentChart::class,
             ])
+            ->userMenuItems([
+                UserMenuItem::make()
+                    ->label('My Profile')
+                    ->url('/admin/user-profile')
+                    ->icon('heroicon-o-user'),
+            
+                'logout' => UserMenuItem::make()
+                    ->label('Sign out')
+                    ->url(fn () => route('filament.logout'))
+                    ->icon('heroicon-o-arrow-left-on-rectangle'),
+
+            ])
+
+
+            
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
