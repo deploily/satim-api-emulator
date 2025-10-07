@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Socialite\Facades\Socialite;
 use SocialiteProviders\Keycloak\Provider as KeycloakProvider;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -46,5 +47,9 @@ class AppServiceProvider extends ServiceProvider
                 'logout'        => "{$baseUrl}/realms/{$realm}/protocol/openid-connect/logout",
             ]);
         });
+
+        if (config('app.env') === 'production') {
+            URL::forceScheme('https');
+        }
     }
 }
