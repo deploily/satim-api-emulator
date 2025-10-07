@@ -11,22 +11,35 @@ A payment processing system built with Laravel.
 
 ## Clone repo
 ```bash 
-git clone <....>
+git clone <....> -------------------------------------
 cd satim-api-emulator
-cp .devcontainer/.env.example .devcontainer/.env
+cp src/.env.example src/.env
 ``` 
 
 Update `.env` to meet your environment
 
-## Usage
+## Setup
 
-Open in devcontainer ...
-Project setup using VSCode from (https://github.com/deploily/deploily-website)
+Open in devcontainer ... -------------------------------------
+Project setup using VSCode from (https://github.com/deploily/deploily-website) -------------------------------------
+
+Add keycloack realm setup ----------------------------------------
+Connect to [http://localhost:8080](http://localhost:8080)
+Credentials `admin` / `admin`
+- Create new realm named `satim`
+- Create new client named `laravel-api`
+TODO add necessary setups ----------------------
+- Get client secret and update `.env`
+- add valid redirect uri 
+- create nex user
+- Get Realm public key (Realm settingq > Keys > RS256 / click [Public Key] )
+- Copy and past to `.env`
+
+## Developement
 
 Instalation
 ```bash
 cd src
-cp .env.example .env
 composer install
 php artisan key:generate
 php artisan migrate
@@ -35,6 +48,9 @@ php artisan migrate
 Run
 ```bash
 cd src
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
 php artisan serve
 ```
 
@@ -142,3 +158,7 @@ curl -X POST "http://172.17.0.1:8080/realms/satim/protocol/openid-connect/token"
   -d "username=ranim" \
   -d "password=ranim"
 ```
+
+
+
+
