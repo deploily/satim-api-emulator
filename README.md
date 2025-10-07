@@ -1,5 +1,4 @@
-
-## SATIM CLONE Payment Processing
+# SATIM CLONE Payment Processing
 
 A payment processing system built with Laravel.
 
@@ -10,13 +9,32 @@ A payment processing system built with Laravel.
 - Payment failure handling
 - Secure session handling
 
-### Usage
- - **instalation**: `cd src`
-   - `composer install`
- - **run**:
-   - `cd src`
-   - `php artisan migrate`
-   - `php artisan serve`
+## Clone repo
+```bash 
+git clone <....>
+cd satim-api-emulator
+cp .devcontainer/.env.example .devcontainer/.env
+``` 
+
+Update `.env` to meet your environment
+
+## Usage
+
+Open in devcontainer ...
+Project setup using VSCode from (https://github.com/deploily/deploily-website)
+
+Instalation
+```bash
+cd src
+composer install
+```
+
+Run
+```bash
+cd src
+php artisan migrate
+php artisan serve
+```
 
 ## API Endpoints
 

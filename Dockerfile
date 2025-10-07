@@ -4,12 +4,22 @@ FROM php:8.2-apache
 # Install PHP extensions required by Laravel
 RUN apt-get update && apt-get install -y \
     libpng-dev libonig-dev libzip-dev libxml2-dev libicu-dev zip unzip git curl \
- && docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath gd intl \
- && apt-get clean && rm -rf /var/lib/apt/lists/*
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath gd intl
+
+# Install system dependencies for intl and zip
 
 # Enable Apache modules
 RUN a2enmod rewrite
+
+# Install MariaDB client
+RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+    && apt-get install -y mariadb-client \ 
+    && apt-get clean -y && rm -rf /var/lib/apt/lists/*
+
+# Install php-mysql driver
+RUN docker-php-ext-install mysqli pdo pdo_mysql
 
 # Configure Apache Document Root to Laravel public/
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
