@@ -11,29 +11,62 @@ A payment processing system built with Laravel.
 
 ## Clone repo
 ```bash 
-git clone <....> -------------------------------------
+git clone git@github.com:deploily/satim-api-emulator.git
 cd satim-api-emulator
 cp src/.env.example src/.env
 ``` 
 
 Update `.env` to meet your environment
 
-## Setup
+## Project setup using VSCode
+Start VSCode 
+```bash
+code .
+```
+If VSCode dont detect the remote container: 
+- open the Command Palette (usually Ctrl or Command + Shift + P) 
+- and type `>Remote-Containers: Open Folder in Container`, 
+- select it and choose the location of this project.
 
-Open in devcontainer ... -------------------------------------
-Project setup using VSCode from (https://github.com/deploily/deploily-website) -------------------------------------
+If you are prompted to Rebuild the container do it: 
+![](docs/devcontainer-rebuild.png)
 
-Add keycloack realm setup ----------------------------------------
+If the **Rebuild** prompt don't shows up : 
+- open the Command Palette (usually Ctrl or Command + Shift + P) 
+- and type `>Remote-Containers: Rebuild Container`, 
+- select it.
+
+
+In the Extensions menu, search for "Remote - Containers" and install it:
+![](docs/vscode-remote-container.png)
+
+
+## keycloack setup
+
+### Add keycloack realm setup
+
 Connect to [http://localhost:8080](http://localhost:8080)
+
 Credentials `admin` / `admin`
-- Create new realm named `satim`
-- Create new client named `laravel-api`
-TODO add necessary setups ----------------------
-- Get client secret and update `.env`
-- add valid redirect uri 
-- create nex user
-- Get Realm public key (Realm settingq > Keys > RS256 / click [Public Key] )
-- Copy and past to `.env`
+
+
+1. Create new realm named `satim`
+2. Create new client
+    - name it: `laravel-api`
+    - Access Type: `confidential`
+    - Valid Redirect URIs: `http://localhost:8000/*`
+3. Get Client Secret
+    - Go to: `Clients > laravel-api > Credentials`
+    - Click Public Key and copy the key
+    - Paste it into your .env
+4. Create a New User
+    - Go to: `Users → Add User`
+    - Fill in the username and set credentials (password, etc.)
+5. Get Realm Public Key
+    - Go to: `Realm Settings → Keys → RS256`
+    - Click Public Key
+    - Copy the key and paste it into your `.env` file
+
 
 ## Developement
 
