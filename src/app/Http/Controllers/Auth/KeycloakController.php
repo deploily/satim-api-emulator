@@ -11,14 +11,16 @@ class KeycloakController extends Controller
 {
     public function redirect()
     {
+       
         return Socialite::driver('keycloak')->redirect();
     }
 
     public function callback()
     {
         try {
+        
             $keycloakUser = Socialite::driver('keycloak')->stateless()->user();
-
+            
             $idToken = $keycloakUser->accessTokenResponseBody['id_token'] ?? null;
             session(['keycloak_id_token' => $idToken]);
 
@@ -30,12 +32,13 @@ class KeycloakController extends Controller
                     'password' => bcrypt(str()->random(16)),
                 ]
             );
-
            
+         
             Auth::login($user);
-
+          
             return redirect('/'); 
         } catch (\Exception $e) {
+       
             return redirect('/')->withErrors(['login' => $e->getMessage()]);
         }
     }
