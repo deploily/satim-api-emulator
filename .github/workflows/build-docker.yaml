@@ -60,7 +60,7 @@ jobs:
           push-to-registry: true
 
   deploiy-image-prod:
-    runs-on: arc-rs-deploily-hub
+    runs-on: arc-rs-epay-emulator
     needs: build-and-push-image # 👈 Ensures it runs only after build-and-push-image completes
     if: github.repository_owner == 'deploily' # 👈 Restrict to 'deploily' org
     steps:
