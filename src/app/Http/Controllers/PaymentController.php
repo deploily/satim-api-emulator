@@ -31,7 +31,7 @@ class PaymentController extends Controller
 
         // Validate the request
         $validated = Validator::make($request->query(), $rules);
-        
+
         if ($validated->fails()) {
             return response()->json([
                 'error' => 'Missing or invalid parameters',
@@ -44,15 +44,15 @@ class PaymentController extends Controller
         if (!$user || $user->satim_password !== $data['password']) {
             return response()->json([
                 'orderId' => '',
-                'formUrl' =>'',
+                'formUrl' => '',
                 'errorMessage' => 'Invalid SATIM username or password',
                 'errorCode' => '0',
             ], 401);
         }
-        
-        try{
-         
-          $payment =  Payment::create(
+
+        try {
+
+            $payment =  Payment::create(
                 [
                     'orderNumber' => $data['orderNumber'],
                     'amount' => $data['amount'],
@@ -63,23 +63,22 @@ class PaymentController extends Controller
                     'user_id' => $user->id,
                 ]
             );
-          
+
             // Return the payment webpage
             return response()->json([
-        'orderId' => $payment->latest('id')->first()->id,
-        'formUrl' => url('/paymentWebpage?orderId=' .$payment->latest('id')->first()->id),
-        'errorMessage' => '',
-        'errorCode' => '',
-              ]);
-        }catch(\Exception $e){
+                'orderId' => $payment->latest('id')->first()->id,
+                'formUrl' => url('/paymentWebpage?orderId=' . $payment->latest('id')->first()->id),
+                'errorMessage' => '',
+                'errorCode' => '',
+            ]);
+        } catch (\Exception $e) {
             return response()->json([
                 'orderId' => '',
-                'formUrl' =>'',
+                'formUrl' => '',
                 'errorMessage' => $e->getMessage(),
                 'errorCode' => '7',
-                      ]);
+            ]);
         }
-
     }
 
     public function confirm(Request $request)
@@ -93,7 +92,7 @@ class PaymentController extends Controller
 
         // Validate the request
         $validated = Validator::make($request->query(), $rules);
-        
+
         if ($validated->fails()) {
             return response()->json([
                 'error' => 'Missing or invalid parameters',
@@ -115,99 +114,94 @@ class PaymentController extends Controller
             ], 401);
         }
 
-   $payment = Payment::findOrFail($data['orderId']);
+        $payment = Payment::findOrFail($data['orderId']);
 
-   
-  if($payment){
-      if($payment->isConfirmed){
-          return response()->json([
-              'orderStatus' => 2, 
-              'errorCode' => 0,
-              'errorMessage' => '',
-              'orderNumber' => $payment->order_number ?? '',
-              'actionCode' => 0,
-              'actionCodeDescription' => 'Payment already confirmed',
-              'amount' => $payment->amount ?? 0,
-              'currency' => 012
-          ]);
-      }
-      
-      $payment->isConfirmed = true;
-      $payment->save();
-      
-      return response()->json([
-          'orderStatus' => 2, 
-          'errorCode' => 0,
-          'errorMessage' => '',
-          'orderNumber' => $payment->order_number ?? '',
-          'actionCode' => 0,
-          'actionCodeDescription' => 'Payment confirmed successfully',
-          'amount' => $payment->amount ?? 0,
-          'currency' => 012,
-          'pan' => $payment->masked_pan ?? '',
-          'expiration' => $payment->card_expiry ?? '',
-          'cardholderName' => $payment->card_holder_name ?? '',
-          'approvalCode' => $payment->approval_code ?? '',
-          'authCode' => '2',
-          'ip' => request()->ip()
-      ]);
-  } else {
-      return response()->json([
-          'errorCode' => 5,
-          'errorMessage' => 'Payment not found',
-          'actionCode' => 5,
-          'actionCodeDescription' => 'Order not found in the system'
-      ], 404);
-  }
-    
-     
-    
+
+        if ($payment) {
+            if ($payment->isConfirmed) {
+                return response()->json([
+                    'orderStatus' => 2,
+                    'errorCode' => 0,
+                    'errorMessage' => '',
+                    'orderNumber' => $payment->order_number ?? '',
+                    'actionCode' => 0,
+                    'actionCodeDescription' => 'Payment already confirmed',
+                    'amount' => $payment->amount ?? 0,
+                    'currency' => 012
+                ]);
+            }
+
+            $payment->isConfirmed = true;
+            $payment->save();
+
+            return response()->json([
+                'orderStatus' => 2,
+                'errorCode' => 0,
+                'errorMessage' => '',
+                'orderNumber' => $payment->order_number ?? '',
+                'actionCode' => 0,
+                'actionCodeDescription' => 'Payment confirmed successfully',
+                'amount' => $payment->amount ?? 0,
+                'currency' => 012,
+                'pan' => $payment->masked_pan ?? '',
+                'expiration' => $payment->card_expiry ?? '',
+                'cardholderName' => $payment->card_holder_name ?? '',
+                'approvalCode' => $payment->approval_code ?? '',
+                'authCode' => '2',
+                'ip' => request()->ip()
+            ]);
+        } else {
+            return response()->json([
+                'errorCode' => 5,
+                'errorMessage' => 'Payment not found',
+                'actionCode' => 5,
+                'actionCodeDescription' => 'Order not found in the system'
+            ], 404);
+        }
     }
 
 
-    public function paymentWebpage(Request $request){
-        
+    public function paymentWebpage(Request $request)
+    {
+
         $payment = Payment::findOrFail($request->query('orderId'));
-        if($payment){
-       
-            return view('paymentWebpage',['data'=>$payment->getAttributes()]);
+        if ($payment) {
+
+            return view('paymentWebpage', ['data' => $payment->getAttributes()]);
         }
-    
-   }
+    }
 
-   public function generateCredentials(Request $request)
-   {
-       $username = Str::uuid(); 
-       $password = Str::random(16);
-   
-       $satimUsername = 'satim_' . Str::random(8);
-       $satimPassword = Str::random(16);
-   
-       try {
-           if (User::where('name', $username)->exists()) {
-               return response()->json(['error' => 'Username already exists'], 400);
-           }
-   
-             User::create([
-               'name'           => $username,
-               'password'       => Hash::make($password),
-               'satim_username' => $satimUsername,
-               'satim_password' => Hash::make($satimPassword),
-           ]);
-   
-           return response()->json([
-               'username'        => $username,
-               'password'        => $password,
-               'satim_username'  => $satimUsername,
-               'satim_password'  => $satimPassword,
-           ]);
-       } catch (\Exception $e) {
-           return response()->json([
-               'error'   => 'Erreur lors de la génération des credentials',
-               'message' => $e->getMessage(),
-           ], 500);
-       }
-   }
-   
+    public function generateCredentials(Request $request)
+    {
+        $username = Str::uuid();
+        $password = Str::random(16);
 
+        $satimUsername = 'satim_' . Str::random(8);
+        $satimPassword = Str::random(16);
+
+        try {
+            if (User::where('name', $username)->exists()) {
+                return response()->json(['error' => 'Username already exists'], 400);
+            }
+
+            User::create([
+                'name'           => $username,
+                'password'       => Hash::make($password),
+                'satim_username' => $satimUsername,
+                'satim_password' => Hash::make($satimPassword),
+            ]);
+
+            return response()->json([
+                'username'        => $username,
+                'password'        => $password,
+                'satim_username'  => $satimUsername,
+                'satim_password'  => $satimPassword,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error'   => 'Erreur lors de la génération des credentials',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }

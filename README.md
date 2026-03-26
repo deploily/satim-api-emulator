@@ -58,7 +58,7 @@ Credentials `admin` / `admin`
     - Valid Redirect URIs: `http://localhost:8000/*`
 3. Get Client Secret
     - Go to: `Clients > laravel-api > Credentials`
-    - Click Public Key and copy the key
+    - Click Secret Key and copy the key
     - Paste it into your .env
 4. Create a New User
     - Go to: `Users → Add User`

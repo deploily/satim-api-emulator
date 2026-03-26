@@ -62,12 +62,7 @@ class User extends Authenticatable implements FilamentUser
     }
     public function canAccessPanel(Panel $panel): bool
     {
-        error_log("----------------------------------------");
-
-        error_log($this->email);
-
         return true;
-
     }
     protected static function booted()
     {

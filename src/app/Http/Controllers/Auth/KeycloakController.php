@@ -18,12 +18,8 @@ class KeycloakController extends Controller
     public function callback()
     {
         try {
-            error_log("### STEP 1: callback reached");
         
             $keycloakUser = Socialite::driver('keycloak')->user();
-            error_log("### STEP 2: keycloak user OK - email: " . $keycloakUser->getEmail());
-            error_log("### STEP 2: keycloak user OK - name: " . $keycloakUser->getName());
-            error_log("### STEP 2: token body: " . json_encode($keycloakUser->accessTokenResponseBody));
 
             $idToken = $keycloakUser->accessTokenResponseBody['id_token'] ?? null;
             session(['keycloak_id_token' => $idToken]);
@@ -39,8 +35,7 @@ class KeycloakController extends Controller
             return redirect('/'); 
         } catch (\Exception $e) {
        
-    error_log("### ERROR: " . $e->getMessage()); 
- 
+            error_log("### ERROR: " . $e->getMessage()); 
             return redirect('/')->withErrors(['login' => $e->getMessage()]);
         }
     }
