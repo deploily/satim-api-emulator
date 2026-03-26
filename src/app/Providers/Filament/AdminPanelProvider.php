@@ -45,7 +45,7 @@ class AdminPanelProvider extends PanelProvider
             ->userMenuItems([
                 UserMenuItem::make()
                     ->label('My Profile')
-                    ->url('/admin/user-profile')
+                    ->url('/user-profile')
                     ->icon('heroicon-o-user'),
             
                 'logout' => UserMenuItem::make()

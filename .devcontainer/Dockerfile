@@ -1,5 +1,10 @@
 FROM mcr.microsoft.com/devcontainers/php:1-8.2-bookworm
-
+# Fix broken Yarn repo GPG key inherited from base image
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg \
+    | gpg --dearmor \
+    | tee /usr/share/keyrings/yarn-archive-keyring.gpg > /dev/null \
+    && echo "deb [signed-by=/usr/share/keyrings/yarn-archive-keyring.gpg] https://dl.yarnpkg.com/debian/ stable main" \
+    | tee /etc/apt/sources.list.d/yarn.list
 # Install dependencies + PHP extensions
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get install -y mariadb-client libicu-dev libzip-dev libpng-dev libonig-dev libzip-dev libxml2-dev libicu-dev zip unzip git curl\ 

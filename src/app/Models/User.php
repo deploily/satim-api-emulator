@@ -16,7 +16,7 @@ use Illuminate\Support\Str;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable,HasApiTokens;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -61,7 +61,8 @@ class User extends Authenticatable
     }
     public function canAccessPanel(Panel $panel): bool
     {
-    return str_ends_with($this->email,'@admin.com');
+        return true;
+
     }
     protected static function booted()
     {

@@ -25,5 +25,5 @@ Route::match(['get', 'post'], '/filament/logout', [KeycloakController::class, 'l
 
 // 👤 Profil utilisateur dans Filament
 Route::middleware(['auth:web'])
-    ->get('/admin/user-profile', UserProfile::class)
+    ->get('/user-profile', UserProfile::class)
     ->name('admin.user-profile');
