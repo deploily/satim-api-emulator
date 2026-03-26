@@ -59,12 +59,12 @@ jobs:
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
 
-  deploiy-image-prod:
-    runs-on: arc-rs-epay-emulator
-    needs: build-and-push-image # 👈 Ensures it runs only after build-and-push-image completes
-    if: github.repository_owner == 'deploily' # 👈 Restrict to 'deploily' org
-    steps:
-      - run: |
-          echo "🎉 Deploy using runner scale set runners:)"
-          kubectl -n epay-emulator rollout restart deployment epay-emulator
-          echo "🎉 Deployment runners finished"
+  # deploiy-image-prod:
+  #   runs-on: arc-rs-epay-emulator
+  #   needs: build-and-push-image # 👈 Ensures it runs only after build-and-push-image completes
+  #   if: github.repository_owner == 'deploily' # 👈 Restrict to 'deploily' org
+  #   steps:
+  #     - run: |
+  #         echo "🎉 Deploy using runner scale set runners:)"
+  #         kubectl -n epay-emulator rollout restart deployment epay-emulator
+  #         echo "🎉 Deployment runners finished"
