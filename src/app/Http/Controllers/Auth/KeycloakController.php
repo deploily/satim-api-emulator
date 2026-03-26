@@ -19,12 +19,9 @@ class KeycloakController extends Controller
     {
         try {
         
-            $keycloakUser = Socialite::driver('keycloak')->stateless()->user();
-            
+            $keycloakUser = Socialite::driver('keycloak')->user();
             $idToken = $keycloakUser->accessTokenResponseBody['id_token'] ?? null;
             session(['keycloak_id_token' => $idToken]);
-
-     
             $user = User::firstOrCreate(
                 ['email' => $keycloakUser->getEmail()],
                 [
@@ -32,13 +29,13 @@ class KeycloakController extends Controller
                     'password' => bcrypt(str()->random(16)),
                 ]
             );
-           
-         
             Auth::login($user);
           
             return redirect('/'); 
         } catch (\Exception $e) {
        
+    error_log("### ERROR: " . $e->getMessage()); 
+ 
             return redirect('/')->withErrors(['login' => $e->getMessage()]);
         }
     }
