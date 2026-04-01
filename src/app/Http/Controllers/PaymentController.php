@@ -17,7 +17,8 @@ class PaymentController extends Controller
         $rules = [
             'userName' => 'required|string',
             'password' => 'required|string',
-            'orderNumber' => 'required|numeric',
+            // 'orderNumber' => 'required|numeric',   
+            'orderNumber' => 'required|string', 
             'amount' => 'required|numeric',
             'currency' => 'required|numeric',
             'returnUrl' => 'required|string',
