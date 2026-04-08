@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Auth;
 class PaymentChart extends ChartWidget
 {
     protected static ?string $heading = 'Payments Over Time';
+    protected int | string | array $columnSpan = 2; // half width
+    protected static ?string $maxHeight = '200px'; // ← add this
+
 
     protected function getData(): array
     {

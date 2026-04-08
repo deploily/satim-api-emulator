@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use Filament\Navigation\UserMenuItem;
 use App\Filament\Resources\PaymentResource\Widgets\PaymentChart;
+use App\Filament\Widgets\UserProfileWidget;
 use App\Filament\Resources\PaymentResource\Widgets\StatsOverview;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -40,6 +41,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 StatsOverview::class,
+                UserProfileWidget::class,
                 PaymentChart::class,
             ])
             ->userMenuItems([

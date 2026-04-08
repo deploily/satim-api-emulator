@@ -30,6 +30,7 @@ class User extends Authenticatable implements FilamentUser
         'password',
         'satim_username',
         'satim_password',
+        'terminal_id'
     ];
 
     /**
@@ -73,6 +74,9 @@ class User extends Authenticatable implements FilamentUser
 
             if (empty($user->satim_password)) {
                 $user->satim_password = Str::random(10); // mot de passe aléatoire
+            }
+             if (empty($user->terminal_id)) {      // ← added
+                $user->terminal_id = 'E' .rand(100000, 999999);
             }
         });
     }

@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\Auth;
 
 class StatsOverview extends BaseWidget
 {
+    protected int | string | array $columnSpan = 2; // half width
     protected function getStats(): array
+
     {
         $totalPayments = \App\Models\Payment::where('user_id', Auth::id())->count();
         $totalAmount = \App\Models\Payment::where('user_id', Auth::id())->sum('amount');

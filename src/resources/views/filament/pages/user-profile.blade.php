@@ -54,6 +54,15 @@
                 class="w-full rounded-md border border-gray-700 bg-black text-white px-3 py-2 focus:border-indigo-500 focus:ring focus:ring-indigo-500"
             />
         </div>
+        <div class="flex flex-col">
+        <label class="text-sm text-white mb-1">Terminal ID</label>
+        <input 
+            type="text" 
+            value="{{ $this->getUser()->terminal_id }}" 
+            readonly
+            class="w-full rounded-md border border-gray-700 bg-black text-white px-3 py-2 focus:border-indigo-500 focus:ring focus:ring-indigo-500"
+        />
+    </div>
     </div>
 </x-filament::page>
 
