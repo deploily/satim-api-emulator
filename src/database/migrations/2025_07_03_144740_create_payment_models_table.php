@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
         
             $table->id();
-            $table->integer('orderNumber')->nullable(false);
+            $table->string('orderNumber')->unique();
             $table->integer('amount')->nullable(false);
             $table->integer('currency')->nullable(false);
             $table->string('returnUrl')->nullable(false);
