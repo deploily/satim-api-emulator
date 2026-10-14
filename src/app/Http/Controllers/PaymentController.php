@@ -88,7 +88,7 @@ class PaymentController extends Controller
         $rules = [
             'userName' => 'required|string',
             'password' => 'required|string',
-            'orderId' => 'required|numeric',
+            'mdOrder' => 'required|numeric',
             'language' => 'required|string',
         ];
 
@@ -103,12 +103,12 @@ class PaymentController extends Controller
         }
         $data = $validated->validated();
         $user = User::where('satim_username', $data['userName'])->first();
-        if (!$user || $user->satim_password !== $data['password'] || !$user->payments()->where('id', $data['orderId'])->exists()) {
+        if (!$user || $user->satim_password !== $data['password'] || !$user->payments()->where('id', $data['mdOrder'])->exists()) {
             return response()->json([
                 'orderStatus' => 2,
                 'errorCode' => 0,
                 'errorMessage' => '',
-                'orderNumber' => $data['orderId'], // ou ''
+                'orderNumber' => $data['mdOrder'], // ou ''
                 'actionCode' => 0,
                 'actionCodeDescription' => 'Invalid username or password',
                 'amount' => 0,
@@ -116,7 +116,7 @@ class PaymentController extends Controller
             ], 401);
         }
 
-        $payment = Payment::findOrFail($data['orderId']);
+        $payment = Payment::findOrFail($data['mdOrder']);
 
 
         if ($payment) {
@@ -130,32 +130,31 @@ class PaymentController extends Controller
                     'ErrorMessage' => '',
                     'orderNumber' => $payment->order_number ?? '',
                     'OrderNumber' => $payment->orderNumber ?? '',
-                        'orderId' => $payment->id,
+                    'orderId' => $payment->id,
                     'OrderId' => $payment->id,
                     'actionCode' => 0,
                     'ActionCode' => 0,
                     'actionCodeDescription' => 'Payment already confirmed',
                     'ActionCodeDescription' => 'Payment already confirmed',
                     'depositAmount' => 0,
-                    'DepositAmount' => 0,
-
                     'amount' => $payment->amount ?? 0,
-                        'Amount' => $payment->amount ?? 0,
+                    'Amount' => $payment->amount ?? 0,
                     'currency' => 012,
                     'Currency' => 012,
                     'respCode' => '00',
                     'RespCode' => '00',
                     'respCode_desc' => '',
                     'RespCodeDesc' => '',
+
                      'params' => [
-        'respCode' => '00',
-        'respCode_desc' => '',
-        'udf1' => '',
-        'udf2' => '',
-        'udf3' => '',
-        'udf4' => '',
-        'udf5' => '',
-    ],
+                        'respCode' => '00',
+                        'respCode_desc' => '',
+                        'udf1' => '',
+                        'udf2' => '',
+                        'udf3' => '',
+                        'udf4' => '',
+                        'udf5' => '',
+                    ],
                 ]);
             }
 
@@ -164,23 +163,23 @@ class PaymentController extends Controller
 
             return response()->json([
                 'orderStatus' => 2,
-                 'OrderStatus' => 2,     
+                'OrderStatus' => 2,
                 'errorCode' => '0',
-                    'ErrorCode' => '0',
+                'ErrorCode' => '0',
                 'errorMessage' => '',
-                  'ErrorMessage' => '', 
+                'ErrorMessage' => '',
                 'orderNumber' => $payment->order_number ?? '',
-                  'OrderNumber' => $payment->orderNumber ?? '',
+                'OrderNumber' => $payment->orderNumber ?? '',
                 'orderId' => $payment->id,  // ← add this
                 'OrderId' => $payment->id,  // ← add this
                 'actionCode' => 0,
-                 'depositAmount' => 0,
+                'depositAmount' => 0,
                 'actionCodeDescription' => 'Payment confirmed successfully',
                 'amount' => $payment->amount ?? 0,
-                    'Amount' => $payment->amount ?? 0, 
+                'Amount' => $payment->amount ?? 0,
                 'currency' => 012,
                 'pan' => $payment->masked_pan ?? '',
-                    'Pan' => '', 
+                'Pan' => '',
                 'expiration' => $payment->card_expiry ?? '',
                 'cardholderName' => $payment->card_holder_name ?? '',
                 'approvalCode' => $payment->approval_code ?? '',
@@ -188,16 +187,16 @@ class PaymentController extends Controller
                 'respCode' => '00',
                 'respCode_desc' => '',
                 'ip' => request()->ip(),
-                   'Ip' => request()->ip(), 
-                    'params' => [
-        'respCode' => '00',
-        'respCode_desc' => '',
-        'udf1' => '',
-        'udf2' => '',
-        'udf3' => '',
-        'udf4' => '',
-        'udf5' => '',
-    ],
+                'Ip' => request()->ip(),
+                'params' => [
+                    'respCode' => '00',
+                    'respCode_desc' => '',
+                    'udf1' => '',
+                    'udf2' => '',
+                    'udf3' => '',
+                    'udf4' => '',
+                    'udf5' => '',
+                ],
             ]);
         } else {
             return response()->json([
