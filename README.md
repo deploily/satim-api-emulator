@@ -164,8 +164,10 @@ GET /api/payment/rest/confirmOrder.do?language=EN&orderId=1&password=xxxxx&userN
 ```
 
 ```
-curl -X GET "http://127.0.0.1:8000/api/payment/rest/confirmOrder.do?language=EN&orderId=5&userName=satim_68be9e9c5ec3f&password=B2fgKUNR1C" \
+curl -X GET "http://127.0.0.1:8000/api/payment/rest/confirmOrder.do?language=EN&mdOrder=5&userName=satim_68be9e9c5ec3f&password=B2fgKUNR1C" \
 -H "Accept: application/json"
+
+curl -X GET "https://epay-emulator.deploily.app/api/payment/rest/public/acknowledgeTransaction.do?"   -G   --data-urlencode "userName=satim_..."   --data-urlencode "password=..."   --data-urlencode "language=fr"   --data-urlencode "mdOrder=.."
 
 ```
 

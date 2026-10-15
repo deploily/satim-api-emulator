@@ -17,12 +17,11 @@ class PaymentController extends Controller
         $rules = [
             'userName' => 'required|string',
             'password' => 'required|string',
-            // 'orderNumber' => 'required|numeric',   
-            'orderNumber' => 'required|string', 
+            'orderNumber' => 'required|string',
             'amount' => 'required|numeric',
             'currency' => 'required|numeric',
             'returnUrl' => 'required|string',
-            'failUrl' => 'url',
+            'failUrl' => 'required|string',
             'description' => 'string',
             'language' => 'required|string',
             'jsonParams' => 'string',
@@ -59,9 +58,14 @@ class PaymentController extends Controller
                     'amount' => $data['amount'],
                     'currency' => $data['currency'],
                     'returnUrl' => $data['returnUrl'],
+                    'failUrl' => $data['failUrl'],
                     'isConfirmed' => false,
                     'isFailed' => false,
                     'user_id' => $user->id,
+                    // TODO add to model and here
+                    // 'description' => 'string',
+                    // 'language' => 'required|string',
+                    // 'jsonParams' => 'string',
                 ]
             );
 
@@ -112,7 +116,8 @@ class PaymentController extends Controller
                 'actionCode' => 0,
                 'actionCodeDescription' => 'Invalid username or password',
                 'amount' => 0,
-                'currency' => 012
+                // TODO change to string to allow values like "012"
+                'currency' => 12
             ], 401);
         }
 
@@ -139,14 +144,14 @@ class PaymentController extends Controller
                     'depositAmount' => 0,
                     'amount' => $payment->amount ?? 0,
                     'Amount' => $payment->amount ?? 0,
-                    'currency' => 012,
-                    'Currency' => 012,
+                    'currency' => 12,
+                    'Currency' => 12,
                     'respCode' => '00',
                     'RespCode' => '00',
                     'respCode_desc' => '',
                     'RespCodeDesc' => '',
 
-                     'params' => [
+                    'params' => [
                         'respCode' => '00',
                         'respCode_desc' => '',
                         'udf1' => '',
@@ -177,7 +182,7 @@ class PaymentController extends Controller
                 'actionCodeDescription' => 'Payment confirmed successfully',
                 'amount' => $payment->amount ?? 0,
                 'Amount' => $payment->amount ?? 0,
-                'currency' => 012,
+                'currency' => 12,
                 'pan' => $payment->masked_pan ?? '',
                 'Pan' => '',
                 'expiration' => $payment->card_expiry ?? '',
